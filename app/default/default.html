@@ -1,0 +1,43 @@
+<div class="container-fluid">
+    <div class="row">
+        <span class="col-xs-12 col-md-4 input">
+            <label>
+                Filter by whatever:
+                <input name="filter" type='text' ng-model="filterWhatever" />
+            </label>
+        </span>
+        <span class="col-xs-12 col-md-3 checkbox">
+            <label>
+              <input type="checkbox" ng-model="oneAtATime">
+                Open only one at a time
+            </label>
+        </span>
+    </div>
+</div>
+<uib-accordion close-others="oneAtATime">
+    <div uib-accordion-group ng-repeat="member in $ctrl.members | filter: filterWhatever" class="panel-default" is-open="member.open || $index == 0">
+        <uib-accordion-heading>
+            {{member.name}}<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': member.open, 'glyphicon-chevron-right': !member.open}"></i>
+        </uib-accordion-heading>
+        <div class="row">
+            <div class="col-xs-12 col-md-6">
+                <h4>Member Information</h4>
+                <p><label>Member ID:</label> {{member.id}}</p>
+                <p><label>Email:</label> {{member.email}}</p>
+                <p><label>Their Digits:</label> {{member.phone}}</p>
+                <p><label>Created:</label> {{member.created_at}}</p>
+                <p><label>Last Updated:</label> {{member.updated_at}}</p>
+            </div>
+            <div class="col-xs-12 col-md-6">
+                <h4>Subscription Information</h4>
+                <p><label>Name:</label> {{member.subscription.name}}</p>
+                <p><label>Price:</label> {{member.subscription.price}}</p>
+                <p><label>Created:</label> {{member.subscription.created_at}}</p>
+                <p><label>Created:</label> {{member.subscription.updated_at}}</p>
+            </div>
+        </div>
+
+
+
+    </div>
+</uib-accordion>
