@@ -1,43 +1,73 @@
 <div class="container-fluid">
     <div class="row">
-        <span class="col-xs-12 col-md-4 input">
-            <label>
-                Filter by whatever:
-                <input name="filter" type='text' ng-model="filterWhatever" />
-            </label>
-        </span>
-        <span class="col-xs-12 col-md-3 checkbox">
-            <label>
-              <input type="checkbox" ng-model="oneAtATime">
-                Open only one at a time
-            </label>
-        </span>
+        <div class="col-xs-12 col-md-4">
+            <div class="input">
+                <label>
+                    Filter by whatever:
+                    <input name="filter" type='text' ng-model="filterWhatever" />
+                </label>
+            </div>
+        </div>
+        <div class="col-xs-12 col-md-6">
+            <div class="row">
+                <div class="col-xs-12 col-md-7 drop-button">
+                    <label>
+                        Sort By Sub Price:
+                        <div class="btn-group" uib-dropdown is-open="status.isopen">
+                            <button id="single-button" type="button" class="btn btn-primary" uib-dropdown-toggle ng-disabled="disabled">
+                                {{(sortItem ? sortItem : 'Willy-Nilly')}} <div class="caret"></div>
+                            </button>
+                            <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button" >
+                                <li role="menuitem"><a href="#" ng-click="$event.preventDefault(); sortItem='Willy-Nilly'; subSort=null">Willy-Nilly</a></li>
+                                <li role="menuitem"><a href="#" ng-click="$event.preventDefault(); sortItem='Ascending'; subSort='subscription.price'; reverse=false">Ascending</a></li>
+                                <li role="menuitem"><a href="#" ng-click="$event.preventDefault(); sortItem='Descending'; subSort='subscription.price'; reverse=true">Descending</a></li>
+                           </ul>
+                       </div>
+                   </label>
+                </div>
+                <div class="col-xs-12 col-md-5 checkbox">
+                    <label>
+                      <input type="checkbox" ng-model="oneAtATime">
+                        <strong>Open only one at a time</strong>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-md-2">
+            <div class="avg-sub">
+                <strong>Average Sub Price: </strong> {{$ctrl.avgPrice | currency : '$'}}
+            </div>
+        </div>
     </div>
 </div>
 <uib-accordion close-others="oneAtATime">
-    <div uib-accordion-group ng-repeat="member in $ctrl.members | filter: filterWhatever" class="panel-default" is-open="member.open || $index == 0">
+    <div class="container-fluid selected" ng-show="filterWhatever">
+        Selected {{($ctrl.members|filter:filterWhatever).length}} / {{$ctrl.members.length}}
+    </div>
+    <div uib-accordion-group ng-repeat="member in $ctrl.members | filter: filterWhatever | orderBy: subSort : reverse " class="panel-default" is-open="member.open">
         <uib-accordion-heading>
-            {{member.name}}<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': member.open, 'glyphicon-chevron-right': !member.open}"></i>
+            {{member.name}} - {{member.subscription.name}} <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': member.open, 'glyphicon-chevron-right': !member.open}"></i>
         </uib-accordion-heading>
         <div class="row">
             <div class="col-xs-12 col-md-6">
-                <h4>Member Information</h4>
-                <p><label>Member ID:</label> {{member.id}}</p>
-                <p><label>Email:</label> {{member.email}}</p>
-                <p><label>Their Digits:</label> {{member.phone}}</p>
-                <p><label>Created:</label> {{member.created_at}}</p>
-                <p><label>Last Updated:</label> {{member.updated_at}}</p>
+                <h4 class="text-info">Member Information</h4>
+                <div class="container">
+                    <p><label>Member ID:</label> {{member.id}}</p>
+                    <p><label>Email:</label> {{member.email}}</p>
+                    <p><label>Their Digits:</label> {{member.phone}}</p>
+                    <p><label>Created:</label> {{member.created_at}}</p>
+                    <p><label>Last Updated:</label> {{member.updated_at}}</p>
+                </div>
             </div>
             <div class="col-xs-12 col-md-6">
-                <h4>Subscription Information</h4>
-                <p><label>Name:</label> {{member.subscription.name}}</p>
-                <p><label>Price:</label> {{member.subscription.price}}</p>
-                <p><label>Created:</label> {{member.subscription.created_at}}</p>
-                <p><label>Created:</label> {{member.subscription.updated_at}}</p>
+                <h4 class="text-info">Subscription Information</h4>
+                <div class="container">
+                    <p><label>Name:</label> {{member.subscription.name}}</p>
+                    <p><label>Price:</label> {{member.subscription.price | currency:"$"}}</p>
+                    <p><label>Created:</label> {{member.subscription.created_at}}</p>
+                    <p><label>Last Updated:</label> {{member.subscription.updated_at}}</p>
+                </div>
             </div>
         </div>
-
-
-
     </div>
 </uib-accordion>

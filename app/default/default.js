@@ -4,24 +4,31 @@ angular.module('carney')
     templateUrl: '/app/default/default.html',
     controller: function membersController ($scope, $http){
       var self = this;
+
       $scope.oneAtATime = true;
-
-      $scope.status = {
-        isCustomHeaderOpen: false,
-        isFirstOpen: true,
-        isFirstDisabled: false
-      };
-
-      $scope.filter = 'test';
+      self.prices = 0;
+      self.avgPrice;
+      self.members = [];
 
       $http({
         method: 'GET',
         url: '/members'
       }).then(function(response){
-        self.members = response.data.data;
+        //get the error if we need it...
         self.error = response.data.error;
+
+        //loop over member object and push it to an array (so angular can sort)
+        //while tallying prices for the average sub price
+        angular.forEach(response.data.data, function(value, key){
+            self.members.push(value);
+            self.prices += value.subscription.price;
+        });
+
+        //calculate average
+        self.avgPrice = self.prices / self.members.length;
+
       }).catch(function(error){
-        console.log('Uh oh!', error);
+          console.log('Uh oh!', error);
       })
     }
   });
